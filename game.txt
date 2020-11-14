@@ -1,0 +1,217 @@
+/* This first part is to declare some global variables that
+will be used trhoughout the program such as the movement variables, bullet firing 
+and others.*/
+
+var hp = 10;
+var score = 0;
+var xD = 0;
+var yD = 0;
+var bulletVelocity=0;
+var cardDirect = [false, false, false, false, false];
+var imgInterval = null;
+
+//This function is for connecting the body of the bullet to the body of the "hero" so they move together
+function imageConnect(baseId,connectId,baseXRelation,baseYRelation,connectXRelation,connectYRelation){
+  var connectXPos = getXPosition(baseId) + (baseXRelation - connectXRelation);
+  var connectYPos = getYPosition(baseId) + (baseYRelation - connectYRelation);
+  setPosition(connectId,connectXPos,connectYPos);
+}
+
+//This function checks if an id meets the criteria for the given bounds
+function boundCheckX(id,xBoundLow,xBoundHigh,xSetLow,xSetHigh){
+  var x = getXPosition(id);
+  if((x<=xBoundLow)){
+    setPosition(id,xSetLow,getYPosition(id));
+    return false;
+  }
+  else if((x>=xBoundHigh)){
+    setPosition(id,xSetHigh,getYPosition(id));
+    return false;
+  }
+  else{
+    return true;
+  }
+}
+
+
+function boundCheckY(id,yBoundLow,yBoundHigh,ySetLow,ySetHigh){
+  var y = getYPosition(id);
+  if(y<=yBoundLow){
+    setPosition(id,getXPosition(id),ySetLow);
+    return false;
+  }
+  else if(y>=yBoundHigh){
+    setPosition(id,getXPosition(id),ySetHigh);
+    return false;
+  }
+  else{
+    return true;
+  }
+}
+
+//Global variables regarding image generation.
+var xImg=0;
+var yImg=0;
+var imgH = 100;
+var imgW = 100;
+var imgCount=0;
+var img = null;
+
+function imageGen(){
+  if(hp>0){
+    if(img != null){
+      hideElement(img);
+      deleteElement(img);
+      hp-=1;
+      setText("lifeLabel","Life: " +hp);
+    }
+    imgCount+=1;
+    img = "zombie"+imgCount;
+    image(img,"New-Piskel-4.png.png");
+    xImg = randomNumber(-20,245);
+    yImg = randomNumber(35,300);
+    setPosition(img, xImg, yImg, imgH, imgW);
+  }
+  if(hp==0){
+    deleteElement(img);
+    setScreen("endScreen");
+    setText("text_area2","You killed " + score + " zombies.");
+    hp=10;
+    setText("lifeLabel","Life: " + hp);
+    score=0;
+    setText("scoreLabel","Score: " +score);
+    xD=0;
+    yD=0;
+    deleteElement("zombDmg");
+    bulletVelocity=0;
+    xImg=0;
+    yImg=0;
+    imgH = 100;
+    imgW = 100;
+    imgCount=0;
+    img = null;
+    clearInterval(imgInterval);
+  }
+}
+
+//How intersection of images will be measured 
+function intersectionDmg(){
+  if(img != null){
+    var gxBullet = getXPosition("cannonBall");
+    var gyBullet = getYPosition("cannonBall");
+    if(gxBullet+64>=xImg+19 && gxBullet+64<=xImg+77){
+      if(gyBullet+30<=yImg+75 && gyBullet+30>=yImg-15){
+        hideElement(img);
+        setPosition("zombDmg",xImg,yImg,100,100);
+        deleteElement(img);
+        hideElement("zombDmg");
+        img=null;
+        score+=1;
+        setText("scoreLabel","Score: " + score);
+      }
+    }
+  }
+}
+
+//Main event that will trigger a timed loop for image generation and basic movement and firing.
+onEvent("startButton","click",function(){
+  setScreen("gameScreen");
+  hideElement("cannonBall");
+  image("zombDmg","New-Piskel-5.png.png");
+  hideElement("zombDmg");
+  imgInterval = setInterval(imageGen, 1375);
+  timedLoop(20, function() {
+    if(hp==0){
+      stopTimedLoop();
+    }
+    xD = 0;
+    yD = 0;
+    if (cardDirect[0]) {
+      xD -= 5;
+    }
+    if (cardDirect[1]) {
+      xD += 5;
+    }
+    if (cardDirect[2]) {
+      yD -= 5;
+    }
+    if (cardDirect[3]) {
+      yD += 5;
+    }
+    if(cardDirect[4]){
+      bulletVelocity-=2;
+      if(getYPosition("cannonBall")>=0){
+        showElement("cannonBall");
+        setPosition("cannonBall",getXPosition("cannonBall")+0.75*xD,getYPosition("cannonBall")+bulletVelocity);
+        boundCheckX("cannonBall",-35,240,-35,240);
+        intersectionDmg();
+      }
+      else{
+        setPosition("cannonBall",getXPosition("hero")-14,getYPosition("hero")-25);
+        bulletVelocity=0;
+      }
+    }
+    if(cardDirect[4]==false){
+      if(getYPosition("cannonBall")>=0&&bulletVelocity<0){
+        setPosition("cannonBall",getXPosition("cannonBall")+0.75*xD,getYPosition("cannonBall")+bulletVelocity);
+        intersectionDmg();
+        if(getYPosition("cannonBall")<=0){
+          bulletVelocity=0;
+        }
+      }
+      else{
+        hideElement("cannonBall");
+        imageConnect("hero","cannonBall",58,4,72,29);
+        bulletVelocity=0;
+      }
+    }
+    setPosition("hero", getXPosition("hero")+xD, getYPosition("hero")+yD);
+    boundCheckX("hero",-25,250,-25,250);
+    boundCheckY("hero",45,375,45,375);
+  });
+});
+
+//Button Presses for different game actions.
+onEvent("gameScreen","keydown",function(event){
+  if (event.key == "Up") {
+    cardDirect[2] = true;
+  } 
+  else if ((event.key == "Down")) {
+    cardDirect[3] = true;
+  } 
+  else if ((event.key == "Left")) {
+    cardDirect[0] = true;
+  } 
+  else if ((event.key == "Right")) {
+    cardDirect[1] = true;
+  }
+  else if(event.key=="b"){
+    cardDirect[4]=true;
+  }
+});
+
+
+onEvent("gameScreen", "keyup", function(event) {
+  if (event.key == "Up") {
+    cardDirect[2] = false;
+  } 
+  else if ((event.key == "Down")) {
+    cardDirect[3] = false;
+  } 
+  else if ((event.key == "Left")) {
+    cardDirect[0] = false;
+  } 
+  else if ((event.key == "Right")) {
+    cardDirect[1] = false;
+  }
+  else if(event.key=="b"){
+    cardDirect[4]=false;
+  }
+});
+
+setScreen("titleScreen");
+
+onEvent("titleButton","click",function(){
+  setScreen("titleScreen");
+});
+
