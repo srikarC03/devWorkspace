@@ -1,0 +1,101 @@
+from math import *
+
+def quadraticRoots(a,b,c):
+	
+	d = -b
+	e = -c
+	
+	if(  a == 0 and b == 0 and c == 0):
+		print( "Function: " + "0")
+	elif( b == 0 and c == 0 ):
+		print( "Function: " + str(a) + "x^2" )
+	elif( a == 0 and b == 0 ):
+		print("Function: " + str(c))
+	elif( a == 0 and c == 0 ):
+		print("Function: " + b + "x")
+	elif( a == 0):
+		if(c < 0):
+			print("Function: " + str(b) + "x - " + str(e))
+		else:
+			print("Function: " + str(b) + "x + " + str(c))
+	elif( b > 0 and c > 0):
+		print(  "Function: " + str(a) + "x^2 + " + str(b) + "x + " + str(c) )
+	elif( b < 0 and c < 0):
+		print(  "Function: " + str(a) + "x^2 - " + str(d) + "x - " + str(e) )
+	elif( b == 0):
+		if(c < 0):
+			print( "Function: " + str(a) + "x^2 - " + str(e))
+		else:
+			print( "Function: " + str(a) + "x^2 + " + str(c))
+	elif( c == 0):
+		if(b < 0):
+			print("Function: " + str(a) + "x^2 - " + str(d) + "x")
+		else:
+			print("Function: " + str(a) + "x^2 + " + str(b) + "x")
+	elif( b < 0 ):
+		print(  "Function: " + str(a) + "x^2 - " + str(d) + "x + " + str(c) )
+	elif( c < 0 ):
+		print(  "Function: " + str(a) + "x^2 + " + str(b) + "x - " + str(e) )
+	else:
+		print("Try again")
+		
+	discriminant = pow(b,2) - (4*a*c)
+	zero = 0
+	
+	if( a != 0 ):
+		if( discriminant == 0):
+			rootOne = (-b + sqrt( pow( b , 2 ) - ( 4 * a * c ) ) ) / ( 2 * a ) 
+			if(rootOne == 0.0 or rootOne == -0.0):
+				print("X-Intercept: " + str(zero))
+			else:
+				print( "X-Intercept: " + str(rootOne) )
+		elif( discriminant > 0):
+			rootOne = (-b + sqrt( pow( b , 2 ) - ( 4 * a * c ) ) ) / ( 2 * a ) 
+			rootTwo = (-b - sqrt( pow( b , 2 ) - ( 4 * a * c ) ) ) / ( 2 * a )
+			if(rootOne == 0.0 or rootOne == -0.0):
+				print("X-Intercept: " + str(zero) + " , " + str(rootTwo))
+			elif(rootTwo == 0.0 or rootTwo == -0.0):
+				print("X-Intercept: " + str(rootOne) + " , " + str(zero))
+			else:
+				print( "X-Intercepts: " + str(rootOne) + " , " + str(rootTwo) )
+		elif( discriminant < 0):
+			imaginary = sqrt( -(discriminant) )
+			real = (-b/2)
+			complex = (imaginary/2)
+			if(real == 0.0 or real == -0.0):
+				print("X-Intercepts: " + str(complex) + "i , -" + str(complex) + "i" )
+			else:
+				print( "X-Intercepts: " + str(real) + " + " + str(complex) + "i , " + str(real) + " - " + str(complex) + "i" )
+		else:
+			print("Error please try again")
+	elif( a == 0):
+		if( b != 0 ):
+			intercept = ( -c ) / b
+			print("X-Intercept: " + str(intercept))
+		else:
+			print("No X-Intercept ")
+	else:
+		print("Try again")
+			
+	
+	
+
+def main():
+
+	print("Find the X-intercepts of a Function")
+	print("The functions standard form is ax^2 + bx + c")
+	print("Only Quadratic and Linear functions can be calculated")
+	l = float(input("Enter a value for the a coefficient of the 1st function."))
+	m = float(input("Enter a value for the b coefficient of the 1st function."))
+	n = float(input("Enter a value for the c coefficient of the 1st function."))
+	quadraticRoots(l,m,n)
+	f = float(input("Enter a value for the a coefficient of the 2nd function"))
+	g = float(input("Enter a value for the b coefficient of the 2nd function."))
+	h =  float(input("Enter a value for the c coefficient of the 2nd function."))
+	quadraticRoots(f,g,h)
+	i= float(input("Enter a value for the a coefficient for the 3rd function."))
+	j= float(input("Enter a value for the b coefficient for the 3rd function."))
+	k= float(input("Enter a value for the c coefficient for the 3rd function."))
+	quadraticRoots(i,j,k)
+main()
+

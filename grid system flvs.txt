@@ -1,0 +1,74 @@
+# Name: Srikar Chandaluri
+# Date: 12/11/19
+# Purpose: To make a program that does a certain function.
+import turtle
+
+x = float(input("Please enter the increment for the x axis as a positive number"))
+y = float(input("Please enter the increment for the y axis as a positive number"))
+
+def gridSystem(x,y):	
+	bot = turtle.Turtle()
+	system = turtle.Turtle()
+	bot.speed(10)
+	system.speed(10)
+	bot.penup()
+	system.penup()
+	bot.hideturtle()
+	system.hideturtle()
+	bot.setposition(0,0)
+	system.setposition(0,0)
+	bot.pendown()
+	system.left(90)
+	system.pendown()
+	system.forward(200)
+	system.penup()
+	system.setposition(0,0)
+	system.pendown()
+	system.right(180)
+	system.forward(200)
+	system.penup()
+	system.setposition(0,0)
+	system.pendown()
+	system.left(90)
+	system.forward(200)
+	system.penup()
+	system.setposition(0,0)
+	system.pendown()
+	system.left(180)
+	system.forward(200)
+	system.penup()
+	system.setposition(0,0)
+	system.pendown()
+	system.right(90)
+	bot.left(90)
+	xAxis = 200/x
+	for n in range( 0 , int(xAxis) ):
+		xIncrement = 0 - ( n * x)
+		nIncrement = 0 + ( n * x)
+		system.penup()
+		bot.penup()
+		system.setposition( xIncrement , -3 )
+		bot.setposition( nIncrement , -3)
+		system.pendown()
+		bot.pendown()
+		system.forward(6)
+		bot.forward(6)
+	yAxis = 200/y
+	system.right(90)
+	bot.right(90)
+	for z in range( 0 , int(yAxis) ):
+		yIncrement = 0 - ( z * y )
+		zIncrement = 0 + ( z * y )
+		bot.penup()
+		system.penup()
+		bot.setposition( -3 , zIncrement )
+		system.setposition( -3 , yIncrement )
+		bot.pendown()
+		system.pendown()
+		bot.forward(6)
+		system.forward(6)
+
+gridSystem(x,y)
+		
+		
+	
