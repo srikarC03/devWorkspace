@@ -1,0 +1,34 @@
+Kruskal's MST Algorithm
+---------------------------------
+- sort edges in order of increasing cost
+- initialize the output tree T
+- for each edge in list of sorted edges
+    - if the edge creates no cycles in T
+        -add the edge to T
+- return T
+
+Correctness of Kruskal
+---------------------------------
+Theorem: Kruskal's algorithm is correct
+Proof: Let T* be the output of kruskal's algortihm on input graph G.
+    1. Clearly T* has no cycles 
+    2. T* is connected
+        2a. By Empty Cut Lemma, only need to show that T* cross every cut
+        2b. Fix a cut(A,B). Since G is connected at least one of its edges crosses
+        (A,B)
+        Kruskals algorithm will include first edge crossing the cut (A,B) that it 
+        sees so adding it will not create a cycle. So the algorthm definitely outputs a tree
+    3. Every edge of T* is justified by the Cut Property meaning T* is the MST.
+        Reason: COnsider iteration where an edge (u,v) is added to the set T
+        then T creates no cycle with (u,v) meaning that it will join together an empty cut across T
+        since (u,V) will be the first and cheapest edge crossing the cut, that means 
+        it satisfies the cut property meaning Kruskal's algorithm outputs a MST.
+
+ Implementing Kruskal's Algorithm with Union-Find
+ ------------------------------------------------
+On the straight-forward implementation of Kruskals algorithm the runtime is not optimal
+the sorting pre-processing step takes O(m*log n) time while the loop runs for m iterations where n work is being done in
+checking cycles so the overall run time is O(m*log n) + O(m*n) = O(m*n)
+
+Using the union find data structure this algorithm can be sped up.
+

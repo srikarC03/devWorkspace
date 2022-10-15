@@ -1,0 +1,43 @@
+#Clustering
+"""
+Informal Goal: Given n "points" [Web pages, images, genome fragments,etz.]
+classify into some coherent groups
+Assumptions: as input we are given a similarity measure - a distance d(q,p) between each point pair.
+Examples: Euclidean distance, Genome similarity
+Goal: Same cluster <==> "nearby"
+
+Max-Spacing k-Clusterings
+-------------------------
+Assume: k = number of clusters
+Call points p and q seperated if they are assigned to different clusters
+Spacing of a k-clustering is the minimum distance between two seperated points
+in diffrent clusters
+The goal is to find a clustering that maximizes this clustering
+
+A Greedy Algorithm
+-------------------------
+If a degenerate solution is assumed where each point is a cluster and also that we need to maximize the spacing of the
+minimmum seperated points. Then, we should join together the minimum spaced seperated points and create a cluster.
+Repeat this until k clusters are formed.
+
+This is called single-link clustering.
+
+Correctness Claim
+------------------------
+Theorem: Single-link clustering finds the max-spacing k-clustering.
+Proof: Let C_1,.....,C_k = greedy clustering with spacing S.
+Let the alternative clustering be C^_1,.....,C^_k which is an arbitrary other clustering
+Need to Show: The spacing of the arbitrary clustering is <= S meaning our algorithm is as good or larger than any other algorithm.
+
+An alternative arbitrary spacing of the cluster happens in the case where there is a point pair p,q such that
+A. p,q are in the same greedy cluster C_i
+B. p,q are in different clusters C^_i, C^_j
+
+Easy Case: if p and q are directly merged, d(p,q) is less than the spacing of the greedy algorithm
+and since p and q are seperated by the other algorithm then that means that the spacing of the other algorithm is less than the distance
+d(p,q) so S <= d(p,q) <= S^
+
+Hard Case: if p and q are indirectly merged by the greedy algorithm, we know that there lies a pair of points that will connect whatever 
+clusters p and q are in meaning that since those points are seperated in the other algorithm, this reduces the hard case to the easy case meaning
+that our algorithm will always be better than or equal to any other algorithm.
+"""

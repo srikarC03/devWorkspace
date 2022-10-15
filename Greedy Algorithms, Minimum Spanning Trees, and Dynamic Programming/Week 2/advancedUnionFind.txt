@@ -1,0 +1,107 @@
+The Union-Find Data Structure
+------------------------------------
+Purpose: maintain a partition of a set X
+
+FIND: given an element x from the set X, return the name of x's group
+UNION: given elements x and y, merge the groups containing them
+
+Previous Solution: each of the elements points to the leader of its group
+meaning that the FIND operation only takes O(1) time but the UNION operation will take O(n*log n) time for n unions,
+since when joining we only update the smaller groups leaders first.
+
+Lazy unions
+------------------------------------
+New idea: update only one pointer for each merge
+
+How?: update the smaller groups leader to point to the leader of the other group instead of renaming all the elements
+in a group. This will create depth to the data structure.
+
+In general: When merging two groups in a UNION make one groups leader a child of the other one
+
+Pro: UNION now only takes two FIND operations and some little work to join two groups.
+Con: It is not clear if the FIND operation still takes O(1) time as now you must traverse parent pointers to find 
+the leader of a node. 
+
+As it is, this means that in the worst case UNION and FIND will take O(n) time to work which is not ideal.
+
+Union by Rank
+--------------------------------------
+For each of the x elements in the set maintain a rank and parent pointer for that element.
+The parent pointer will point to that elements immediate parent.
+The rank will be the maximum number of hops from some leaf to x.
+
+Initially the rank of all points will be 0 
+
+FIND will return the root of the tree that the element is in by traversing parent pointers until it stops.
+UNION(x,y):
+    s1 = FIND(x), s2 = FIND(y)
+    if rank[s1] > rank[s2] then set parent[s2] == s1
+    else set parent[s1] to s2
+
+There are no changes in the rank of a root unless two trees of the same rank are being combined.
+Runtime of the FIND(x) will be upper bounded longest path from a leaf to root 
+
+It is immediate that for all objects, ranks only go up over time and that only ranks of roots go up.
+Ranks also strictly increase along a path from leaf to root.
+
+Rank Lemma
+---------------------------------------
+Rank Lemma: Consider an arbitrary sequence of UNION operations. For every
+rank of the data, there are at most n / 2^r objects with rank r.
+
+Corollary: r_max <= log_2(n) and the worst case run time of FIND and UNION is O(log n)
+
+Proof of Rank Lemma:
+    Claim 1: if x,y have the same rank r, then their subtrees are disjoint.
+    Claim 2: the subtree of a rank-r object has a size >= 2^r
+
+    The correctness of these claims imply the Rank Lemma
+
+    Proof of Claim 1: Will show contrapositive. Suppose subtrees of x,y have object z in common.
+    This means that there is a path from z to x and z to y. If this is true then one of x,y is an 
+    ancestor of the other point. This means that they indeed having different ranks meaning Claim 1 is true.
+
+    Proof of Claim 2: The minimum size for a rank r tree is 2^r because rank only increase when subtree of the same size is added meaning
+    assuming the base case, the minimum size has to be 2^r so it doubles each time.
+
+        Base Case: initially all ranks = 0, all subtree sizes = 1
+        Inductive Step: nothing to prove unless the rank of some object changes as the subtree size will only go up.
+        Interesting Case: UNION(x,y) with s_1 = FIND(x) and s_2 = FIND(y),
+        and rank[s_1] = rank[s_2] = r. After the union rank[s_2] = r + 1 and the subtree size = s_2 old size + s_1 old size
+        by induction since each old tree has min size 2^r this means the new tree has size 2^(r+1) while the rank also goes up by 1.
+        
+        Therefore, due to Proof by Induction, Claim 2 is correct.
+    
+    With both claims being correct the Rank Lemma is proved to be True therefore the runtime of FIND and UNION at worst will be O(log n).
+
+Path Compression
+----------------------------------------------
+Idea: WHy bother traversing a lead-root path multiple times?
+Path Compression: after FIND(x), install shortcuts by setting the parent pointers of a leaf node to the root itself instead of it's parent.
+Con: Constant-factor overhead to FIND
+Pro: speeds up subsequent FIND(x)
+
+Everything done using the Lazy Unions by rank is done the same except when FIND(x) is called once on a leaf, its
+parent pointer is set to the root node instead of having to traverse the tree each time.
+
+This will signifcantly speed up the runtime of the algorithm but by what is what needs to be determined.
+
+Hopcroft-Ullman Theorem
+---------------------------------------------
+Theorem: With Union by Rank and path compression, m UNION and FIND operations take O(m * log^*n)
+where log^*n = the number of log operations done on n before n < 1.
+
+This is true for all cases, this will focus on the interesting case where m is Omega(n) or atleast n
+
+Intuition: Installing shortcuts should significantly speed up subseqeunt FINDs + UNIONs
+Question: How to track this progress and quantify the benefit?
+
+Path Compression increases the Progress Measure: rank[parent(x)]-rank[x]
+
+Once an object becomes a leaf, its rank becomes frozen.
+
+Proof Setup: Rank Blocks will 
+
+
+
+ 
